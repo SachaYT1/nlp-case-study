@@ -5,7 +5,7 @@ Comparison of spaCy (transition-based) and Stanza (graph-based) dependency parse
 ## Setup
 
 ```bash
-python3.11 -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 python -m spacy download en_core_web_trf
