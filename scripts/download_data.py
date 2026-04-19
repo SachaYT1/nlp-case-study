@@ -1,6 +1,9 @@
 """Download UD-EWT (English) and UD-SynTagRus (Russian) test splits."""
-from pathlib import Path
+from __future__ import annotations
+
+import urllib.error
 import urllib.request
+from pathlib import Path
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 
@@ -17,14 +20,23 @@ FILES = {
 
 
 def main() -> None:
-    DATA_DIR.mkdir(exist_ok=True)
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
     for fname, url in FILES.items():
         dest = DATA_DIR / fname
         if dest.exists():
             print(f"skip {fname} (exists)")
             continue
         print(f"downloading {fname} ...")
-        urllib.request.urlretrieve(url, dest)
+        tmp = dest.with_suffix(".tmp")
+        try:
+            urllib.request.urlretrieve(url, tmp)
+        except urllib.error.HTTPError as e:
+            tmp.unlink(missing_ok=True)
+            raise RuntimeError(f"HTTP {e.code} downloading {url}") from e
+        except Exception:
+            tmp.unlink(missing_ok=True)
+            raise
+        tmp.rename(dest)
         print(f"saved {dest}")
 
 
