@@ -85,6 +85,29 @@ This is the largest structural gap in the study. Long, often non-projective arcs
 ![Per-relation accuracy delta heatmap](fig_per_relation_delta.png)
 *Figure 5. (graph − transition) per-relation accuracy delta, top-15 most frequent UD relations per language. Red = graph-based better. The RU column isolates the fair comparison; note spaCy's `xcomp` / `iobj` wins as blue cells.*
 
+### Projectivity slice — the cleanest structural signal
+![UAS by projectivity](fig_projectivity.png)
+*Figure 6. UAS split by arc projectivity (gold-tree classification). Non-projective arcs are the theoretical weak spot of shift-reduce.*
+
+| | Projective arcs | Non-projective arcs |
+|---|---|---|
+| **EN** spaCy / Stanza UAS | 0.616 / 0.908 (Δ +29 pt) | 0.289 / 0.422 (Δ +13 pt) — only 45 NP arcs (0.2%) |
+| **RU** spaCy / Stanza UAS | 0.899 / 0.938 (Δ +3.9 pt) | 0.321 / 0.632 (Δ **+31 pt**) — 1,079 NP arcs (0.85%) |
+
+On Russian non-projective arcs, graph-based UAS is **nearly 2× that of transition-based** — the largest structural gap in the whole study, and a direct empirical confirmation of the shift-reduce weak spot. Both parsers still struggle with NP arcs in absolute terms (Stanza hits only 0.63 UAS), so this is an open problem, not a solved one.
+
+### EN label-fairness check — how much of the EN LAS gap is labels vs attachment?
+![EN label fairness](fig_label_fairness.png)
+*Figure 7. spaCy EN LAS raw vs after CLEAR→UD label remap (`src/label_map.py`). Stanza already uses UD so remap is a no-op.*
+
+| | UAS | LAS (raw) | LAS (UD-remap) |
+|---|---|---|---|
+| spaCy EN | 0.615 | 0.450 | **0.557** (+10.6 pt from labels) |
+| Stanza EN | 0.907 | 0.883 | 0.883 |
+| Remaining LAS gap | | 43.3 pt | **32.6 pt** |
+
+Label remapping closes ~1/4 of the raw LAS gap; the remaining ~32 pt matches the UAS gap (29 pt) — i.e. once labels are fair, **the EN gap is genuine attachment error, not a scoring artefact**. This validates the decision to report UAS as the primary EN metric in earlier sections. Remap is label-only — it cannot fix the CLEAR preposition-chain structure (`prep → pobj` vs UD `case + obl/nmod`), so even this number is a lower bound on spaCy EN's "true" fairness-corrected LAS.
+
 **Russian (fair UD-vs-UD):** Stanza's biggest wins are on `compound` (+65 pt), `vocative` (+59 pt), `expl` (+67 pt), `flat` (+19 pt), `obl` (+16 pt), `parataxis` (+24 pt) — relations that span long distances, violate projectivity, or require global tree consistency. spaCy wins on a small set — notably `xcomp` (+6.9 pt) and `iobj` (+4.0 pt) — short-range, lexically-cued relations where local features suffice.
 
 **Top RU confusions** (from [confusion_top.csv](../results/confusion_top.csv)) confirm the mechanism: spaCy's dominant error is mis-routing oblique arguments (`obl → advmod`, `obl → nmod`, `obl → obj`) — head-selection mistakes that propagate through the greedy stack.
@@ -94,13 +117,14 @@ This is the largest structural gap in the study. Long, often non-projective arcs
 ## Conclusions
 
 1. **Speed/Memory is not a tie.** Transition-based (spaCy) wins throughput decisively — **17× on RU, 2.5× on EN** — but *uses more* peak memory, because the CNN/transformer tagger dominates, not the parser. If you only care about throughput, the choice is obvious.
-2. **Accuracy gap is real but narrower than folklore on RU.** Once label-scheme artefacts are controlled for, graph-based leads RU UAS by ~4 pt overall — meaningful, not dramatic.
-3. **The gap concentrates where theory predicts.** Long arcs (+9.8 pt RU UAS), long sentences (widens by ~1 pt per length band), non-projective / global-structure relations (`obl`, `flat`, `parataxis`, `compound`). Exactly the regimes where greedy local decisions are most fragile.
-4. **Morphological richness alone does not flip the verdict.** Russian is where you'd expect graph-based to dominate; it does, but the effect is strongest on *long-distance* constructions, not on morphology per se. RU's short-arc accuracy is already high for both families.
-5. **Practical recipe:**
+2. **Accuracy gap is real but narrower than folklore on RU overall.** Once label-scheme artefacts are controlled for (Figure 7), graph-based leads RU UAS by ~4 pt overall — meaningful, not dramatic.
+3. **The gap concentrates where theory predicts, and it is dramatic there.** The aggregate RU +4 pt hides a **+31 pt gap on non-projective arcs** (Figure 6) and a **+9.8 pt gap on long arcs** (Figure 4). These are the regimes where greedy shift-reduce structurally cannot recover — global MST decoding is doing real work, not just scoring noise.
+4. **The EN gap is genuine attachment error, not label bias.** CLEAR→UD remap closes 11 pt of the 43 pt raw LAS gap; the residual 32 pt matches the UAS gap one-for-one. Label-scheme is a caveat, not an excuse.
+5. **Morphological richness alone does not flip the verdict.** Russian is where you'd expect graph-based to dominate; it does, but the effect is concentrated on *long-distance* and *non-projective* constructions — structural properties of free word order — not on morphology per se.
+6. **Practical recipe:**
    - **High-volume, real-time, short text (chat, logs, search):** transition-based. The throughput is worth the 4-point UAS trade on RU.
-   - **Offline analysis, long documents, legal / literary Russian, linguistic research:** graph-based. The gap on long arcs and non-projective constructions is structural, not incidental.
-   - **Picking a label scheme matters.** If you need UD-conformant output, check label coverage before trusting an out-of-the-box LAS number.
+   - **Offline analysis, long documents, legal / literary Russian, linguistic research:** graph-based. The non-projective-arc gap (Figure 6) is structural, not incidental — if your data contains free-word-order discontinuities, shift-reduce will quietly mis-route them.
+   - **Picking a label scheme matters.** If you need UD-conformant output, check label coverage before trusting an out-of-the-box LAS number — or apply an explicit remap (`src/label_map.py`) and publish both variants.
 
 ---
 
