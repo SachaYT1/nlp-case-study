@@ -1,0 +1,5 @@
+lang,parser,n_long_arcs,uas_long,las_long
+en,spacy:en_core_web_trf,2098,0.388,0.3051
+en,stanza:en,2098,0.7598,0.7331
+ru,spacy:ru_core_news_lg,15727,0.7415,0.7021
+ru,stanza:ru,15727,0.8398,0.8135

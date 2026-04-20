@@ -1,0 +1,5 @@
+parser,variant,uas,las,n_tokens
+spacy:en_core_web_trf,raw,0.6152,0.45,22029
+spacy:en_core_web_trf,ud_remap,0.6152,0.5565,22029
+stanza:en,raw,0.9074,0.8832,22029
+stanza:en,ud_remap,0.9074,0.8832,22029

@@ -1,0 +1,5 @@
+lang,parser,family,tokens_per_sec_mean,tokens_per_sec_std,peak_mb
+en,spacy:en_core_web_trf,transition,1230.9,87.3,25.3
+en,stanza:en,graph,488.4,26.3,13.6
+ru,spacy:ru_core_news_lg,transition,12435.1,159.2,70.9
+ru,stanza:ru,graph,729.4,10.3,9.3

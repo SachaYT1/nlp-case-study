@@ -1,0 +1,17 @@
+lang,parser,bucket,n,uas,las
+en,spacy:en_core_web_trf,1-10,1164,0.643,0.5073
+en,stanza:en,1-10,1164,0.909,0.8826
+en,spacy:en_core_web_trf,11-20,551,0.6173,0.4347
+en,stanza:en,11-20,551,0.9205,0.8955
+en,spacy:en_core_web_trf,21-40,308,0.6022,0.4355
+en,stanza:en,21-40,308,0.8997,0.8771
+en,spacy:en_core_web_trf,40+,54,0.5928,0.4249
+en,stanza:en,40+,54,0.8885,0.8662
+ru,spacy:ru_core_news_lg,1-10,2485,0.9035,0.8509
+ru,stanza:ru,1-10,2485,0.9409,0.9057
+ru,spacy:ru_core_news_lg,11-20,3398,0.9065,0.8567
+ru,stanza:ru,11-20,3398,0.9445,0.9149
+ru,spacy:ru_core_news_lg,21-40,2546,0.8916,0.843
+ru,stanza:ru,21-40,2546,0.9342,0.9034
+ru,spacy:ru_core_news_lg,40+,371,0.8645,0.8117
+ru,stanza:ru,40+,371,0.9131,0.8772

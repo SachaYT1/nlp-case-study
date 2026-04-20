@@ -4,7 +4,6 @@ docs/superpowers/
 SKILL.md 
 skills-lock.json
 data/
-results/
 .venv/
 __pycache__/
 .pytest_cache/

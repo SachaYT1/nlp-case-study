@@ -1,0 +1,5 @@
+lang,parser,family,uas,las,n_sentences
+en,spacy:en_core_web_trf,transition,0.6152,0.45,2077
+en,stanza:en,graph,0.9074,0.8832,2077
+ru,spacy:ru_core_news_lg,transition,0.8946,0.8446,8800
+ru,stanza:ru,graph,0.9358,0.9043,8800

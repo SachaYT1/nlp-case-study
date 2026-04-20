@@ -1,0 +1,9 @@
+lang,parser,slice,n,uas,las
+en,spacy:en_core_web_trf,proj,21984,0.6159,0.4506
+en,spacy:en_core_web_trf,nonproj,45,0.2889,0.1778
+en,stanza:en,proj,21984,0.9084,0.8843
+en,stanza:en,nonproj,45,0.4222,0.3778
+ru,spacy:ru_core_news_lg,proj,127176,0.8994,0.8493
+ru,spacy:ru_core_news_lg,nonproj,1079,0.3207,0.291
+ru,stanza:ru,proj,127176,0.9384,0.907
+ru,stanza:ru,nonproj,1079,0.6321,0.5941
