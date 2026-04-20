@@ -54,7 +54,7 @@ Dependency parsers split into two algorithmic families with opposite design trad
 *Figure 2. LAS vs tokens/sec (log scale). Transition-based (spaCy) sits top-right on RU — high throughput, acceptable accuracy. Graph-based (Stanza) dominates the accuracy axis on both languages.*
 
 - **Speed:** transition-based is 2.5× faster on EN (transformer backbone) and **17× faster on RU** (lg CNN backbone).
-- **Memory:** graph-based uses ~2× *less* peak memory in both languages — at the cost of throughput.
+- **Memory:** graph-based uses dramatically *less* peak memory — **1.9× less on EN, 7.6× less on RU** — at the cost of throughput. The spaCy-RU `lg` CNN backbone is the memory-heavy component, not the parser itself.
 - **Accuracy (UAS):** Stanza leads everywhere; gap is **+29 pts on EN** (inflated by the LAS-label issue propagating into attachment choices) and **+4.1 pts on RU** on a fair UD head-to-head.
 
 ---
@@ -116,10 +116,9 @@ Label remapping closes ~1/4 of the raw LAS gap; the remaining ~32 pt matches the
 
 ## Conclusions
 
-1. **Speed/Memory is not a tie.** Transition-based (spaCy) wins throughput decisively — **17× on RU, 2.5× on EN** — but *uses more* peak memory, because the CNN/transformer tagger dominates, not the parser. If you only care about throughput, the choice is obvious.
+1. **Speed/Memory is not a tie.** Transition-based (spaCy) wins throughput decisively — **17× on RU, 2.5× on EN** — but *uses more* peak memory (**7.6× more on RU, 1.9× more on EN**) because the CNN/transformer tagger dominates the footprint, not the parser. If you only care about throughput, the choice is obvious; if memory is bounded, the trade-off reverses.
 2. **Accuracy gap is real but narrower than folklore on RU overall.** Once label-scheme artefacts are controlled for (Figure 7), graph-based leads RU UAS by ~4 pt overall — meaningful, not dramatic.
 3. **The gap concentrates where theory predicts, and it is dramatic there.** The aggregate RU +4 pt hides a **+31 pt gap on non-projective arcs** (Figure 6) and a **+9.8 pt gap on long arcs** (Figure 4). These are the regimes where greedy shift-reduce structurally cannot recover — global MST decoding is doing real work, not just scoring noise.
-4. **The EN gap is genuine attachment error, not label bias.** CLEAR→UD remap closes 11 pt of the 43 pt raw LAS gap; the residual 32 pt matches the UAS gap one-for-one. Label-scheme is a caveat, not an excuse.
 5. **Morphological richness alone does not flip the verdict.** Russian is where you'd expect graph-based to dominate; it does, but the effect is concentrated on *long-distance* and *non-projective* constructions — structural properties of free word order — not on morphology per se.
 6. **Practical recipe:**
    - **High-volume, real-time, short text (chat, logs, search):** transition-based. The throughput is worth the 4-point UAS trade on RU.
