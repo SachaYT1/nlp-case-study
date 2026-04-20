@@ -9,7 +9,7 @@ A practical comparison of two dependency-parsing families on English and Russian
 
 Measured: **accuracy** (UAS / LAS), **throughput** (tokens/sec), **peak memory**, plus error analysis by sentence length, long-distance arcs, projectivity, per-relation deltas, and an EN label-fairness check (CLEAR → UD remap).
 
-**Deliverable:** [`poster/poster.md`](poster/poster.md) + seven figures under [`poster/`](poster/).
+**Deliverables:** [`deliverables/`](deliverables/) — `poster.pdf`, `poster.png`, `report.pdf`, `report.md`.
 
 ## Repository layout
 
@@ -17,8 +17,10 @@ Measured: **accuracy** (UAS / LAS), **throughput** (tokens/sec), **peak memory**
 data/           UD 2.13 .conllu test files (downloaded via scripts/download_data.py)
 src/            data loading, parsers, metrics, perf, plotting, projectivity, label_map
 notebooks/      01 setup → 06 extra experiments + kaggle_run_all (master)
-results/        output CSVs (accuracy, performance, by_length, projectivity, etc.)
-poster/         poster.md + fig_*.png
+results/
+  tables/       output CSVs (accuracy, performance, by_length, projectivity, etc.)
+  figures/      fig_*.png
+deliverables/   poster.pdf, poster.png, report.pdf, report.md
 tests/          pytest for metrics and data loading
 ```
 
@@ -40,11 +42,11 @@ Then run notebooks **in order**:
 | Notebook | Writes to |
 |---|---|
 | `01_setup_and_data.ipynb` | sanity check only |
-| `02_benchmark_accuracy.ipynb` | `results/accuracy.csv` |
-| `03_benchmark_speed_memory.ipynb` | `results/performance.csv` |
-| `04_error_analysis.ipynb` | `results/accuracy_by_length.csv`, `accuracy_by_relation.csv`, `long_distance_stress.csv`, `confusion_top.csv` |
-| `06_extra_experiments.ipynb` | `results/projectivity.csv`, `en_label_fairness.csv` |
-| `05_poster_figures.ipynb` | `poster/fig_*.png` (reads all CSVs above) |
+| `02_benchmark_accuracy.ipynb` | `results/tables/accuracy.csv` |
+| `03_benchmark_speed_memory.ipynb` | `results/tables/performance.csv` |
+| `04_error_analysis.ipynb` | `results/tables/accuracy_by_length.csv`, `accuracy_by_relation.csv`, `long_distance_stress.csv`, `confusion_top.csv` |
+| `06_extra_experiments.ipynb` | `results/tables/projectivity.csv`, `en_label_fairness.csv` |
+| `05_poster_figures.ipynb` | `results/figures/fig_*.png` (reads all CSVs above) |
 
 Notebooks 02 / 03 / 04 / 06 each re-parse full test sets — cache predictions if you iterate.
 
@@ -63,7 +65,7 @@ pytest tests/
 - **Gold tokenization everywhere** — isolates the parser, not the tokenizer.
 - **Punctuation excluded** from UAS/LAS (standard UD practice); label subtypes normalized via `.split(":")[0]`.
 - **Family mapping** lives in [`src/plotting.py::FAMILY`](src/plotting.py) — single source of truth.
-- When adding an experiment: write a CSV to `results/`, read it in `05_poster_figures.ipynb`, and reference the figure from `poster/poster.md`.
+- When adding an experiment: write a CSV to `results/tables/`, read it in `05_poster_figures.ipynb` (figures go to `results/figures/`), and reference the figure from the deliverable.
 
 ## License & attribution
 
