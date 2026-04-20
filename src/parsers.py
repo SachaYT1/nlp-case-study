@@ -48,8 +48,7 @@ class StanzaParser:
         )
 
     def parse(self, sentences: list[list[str]]) -> list[ParseResult]:
-        text = "\n".join(" ".join(toks) for toks in sentences)
-        doc = self.nlp(text)
+        doc = self.nlp(sentences)
         results: list[ParseResult] = []
         for sent in doc.sentences:
             heads = [w.head for w in sent.words]

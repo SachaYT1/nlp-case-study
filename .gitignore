@@ -11,3 +11,4 @@ __pycache__/
 .ipynb_checkpoints/
 *.pyc
 poster/*.pdf
+CLAUDE.md
