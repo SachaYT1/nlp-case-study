@@ -9,5 +9,5 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 *.pyc
-poster/*.pdf
+assets/
 CLAUDE.md
